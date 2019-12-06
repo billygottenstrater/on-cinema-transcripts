@@ -6,7 +6,9 @@ import re
 TRANSCRIPT_DIR = "transcripts/out"
 
 regex_strings = {
-    "line": "\s*(.*):\s*((?:\S+\s)*(?:\S+))\s*",
+    "blank_line": "^\s*$",
+    "title_line": "\s*\*\*(.*)\*\*\s*",
+    "line": "\s*(.*?):\s*((?:\S+\s)*(?:\S+))\s*",
     "stage_direction": "<(.*)>",
 }
 
@@ -24,6 +26,7 @@ def map_characters(string):
     return string
 
 def parse_stage_direction(line):
+    match = re.match(regex_strings["stage_direction"], line)
     return {
         "type": "stage_direction",
         "stage_direction": match.groups()[0]
@@ -40,14 +43,18 @@ def parse_line(line):
 def line_to_object(line):
     line = map_characters(line)
     try:
+        if re.match(regex_strings["blank_line"], line):
+            return
         if re.match(regex_strings["stage_direction"],line):
             return parse_stage_direction(line)
         elif re.match(regex_strings["line"], line):
             return parse_line(line)
         else:
+            import pdb; pdb.set_trace()
             print("couldn't make anything of this line: {}".format(line))
 
     except Exception as e:
+        import pdb; pdb.set_trace()
         print("Unable to parse line: {}".format(line))
 
 def create_file(name, transcript):
@@ -61,14 +68,15 @@ def create_transcript(name, f):
     for line in f:
         print(line)
         line = line.strip()
-        match = re.match("\*\*(.*)\*\*", line)
+        match = re.match(regex_strings["title_line"], line)
         if match:
             create_file(name, transcript)
             # name of the next episode
             next_name = match.groups()[0]
             return next_name
         line_obj = line_to_object(line)
-        transcript["transcript"].append(line_obj)
+        if(line_obj):
+            transcript["transcript"].append(line_obj)
     create_file(name, transcript)
     return None
     
@@ -78,9 +86,7 @@ def generate_transcripts(filename):
         firstline = f.readline().strip()
         name = ""
         try:
-            # import pdb; pdb.set_trace()
-            match = re.match("\*\*(.*)\*\*", firstline)
-            #import pdb; pdb.set_trace()
+            match = re.match(regex_strings["title_line"], firstline)
             name = match.groups()[0]
             while(name):
                 print("generating transcript for {}".format(name))
