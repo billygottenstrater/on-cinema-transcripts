@@ -1,4 +1,5 @@
 import React from "react";
+import './index.css';
 import {
     BrowserRouter as Router,
     Switch,
@@ -6,69 +7,71 @@ import {
     NavLink
 } from "react-router-dom";
 
-let json_files = [
-  "S01E01.json",
-  "S01E02.json",
-  "S01E03.json",
-  "S01E04.json",
-  "S01E05.json",
-  "S01E06.json",
-  "S01E07.json",
-  "S01E08.json",
-  "S01E09.json",
-  "S01E10.json",
-  "S02E01.json",
-  "S02E02.json",
-  "S02E03.json",
-  "S02E04.json",
-  "S02E05.json",
-  "S02E06.json",
-  "S02E07.json",
-  "S02E08.json",
-  "S02E09.json",
-  "S02E10.json",
-];
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      json_files: null,
+    }
+  }
 
-export default function App() {
-  let file_links = [];
-  let file_routes = []
-  json_files.forEach((file) => {
-    let episode_name = file.split(".")[0];
-    let episode_path = "/" + episode_name
-    file_links.push(<li><NavLink to={episode_name} key={episode_name}>{episode_name}</NavLink></li>);
-    file_routes.push(
-      <Route exact path={episode_path}>
-        <Episode name={episode_name} key={episode_name} />
-        </Route>
-     )
-  });
-  return (
-    <Router>
-      <div>
-        <ul className="sidebar">
-          <li>
-            <NavLink to="/">Home</NavLink>
-          </li>
-          {file_links}
-        </ul>
-
-        <hr />
-
-        <Switch>
-          <Route exact path="/">
-            <Home />
+  componentDidMount() {
+    if (this.state.isLoading){
+      fetch("http://99.4.188.203:3001/list.json")
+        .then( res => res.json())
+        .then(
+          (result) => {
+            this.setState({
+              json_files: result.files,
+              isLoading: false,
+            });
+          }
+        )
+    }
+  }
+  render() {
+    if (this.state.isLoading){
+      return (
+        <p>loading!!!</p>
+      )
+    }
+    let file_links = [];
+    let file_routes = []
+    this.state.json_files.forEach((file) => {
+      let episode_name = file.split(".")[0];
+      let episode_path = "/" + episode_name
+      file_links.push(<NavLink to={episode_name} key={episode_name}>{episode_name}</NavLink>);
+      file_routes.push(
+        <Route exact path={episode_path}>
+          <Episode name={episode_name} key={episode_name} />
           </Route>
-          {file_routes}
-        </Switch>
-      </div>
-    </Router>
-  );
+       )
+    });
+    return (
+      <Router>
+        <div className="sidebar">
+          <NavLink to="/">Home</NavLink>
+          {file_links}
+          <hr />
+        </div>
+        <div className="main">
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            {file_routes}
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
 }
 
 function Home(){
   return (
     <div>
-      <h1>Home</h1>
+      <h2>Home</h2>
       <p> Welcome to On Cinema Transcripts🍿🍿🍿🍿🍿! This is very much a work in progress. But enjoy what's here so far!</p>
     </div>
   );
@@ -77,8 +80,10 @@ function Home(){
 class Line extends React.Component {
   render() {
     return (
-      <div class="line">
-      {this.props.person + ": " + this.props.line}
+      <div className="linecontainer">
+        <span className="person gregg">{this.props.person}</span>
+        <span>: </span>
+        <span className="line gregg">{this.props.line}</span>
       </div>
     )
   }
@@ -87,8 +92,8 @@ class Line extends React.Component {
 class StageDirection extends React.Component {
   render() {
     return (
-      <div class="stage_diraction">
-      <em>{this.props.stage_direction}</em>
+      <div class="stage_direction">
+      <em><strong>{this.props.stage_direction}</strong></em>
       </div>
     )
   }
@@ -103,11 +108,10 @@ class Episode extends React.Component {
     }
   }
   componentDidMount() {
-    fetch("http://192.168.1.169:3001/"+this.state.name+".json")
+    fetch("http://99.4.188.203:3001/"+this.state.name+".json")
       .then( res => res.json())
       .then(
         (result) => {
-          console.log(result)
           this.setState({
             transcript: result,
             isLoading: false,
@@ -122,7 +126,6 @@ class Episode extends React.Component {
       )
     }
     let lines = [];
-    console.log("---------");
     let transcript = this.state.transcript;
     this.state.transcript.transcript.forEach((item) => {
       if (item.type === 'line') {

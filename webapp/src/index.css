@@ -3,59 +3,57 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
+.sidebar {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 100px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
 }
 
-a:active {
-  color: green;
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #818181;
+  display: block;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+a.active {
+  color: #3F9EEB
+}
+
+.main {
+  font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+  margin-left: 110px;
+  padding: 0px 10px;
+}
+
+/*.linecontainer {
   background-color: aliceblue;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
+.linecontainer>div {
+  display: inline-block;
+}*/
 
-.test {
-  width: 100px;
-  height: 100px;
-  background-color: cyan;
-}
-
-.status {
-  margin-bottom: 10px;
-}
-
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
+.person {
+  font-size: 16px;
   font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
 }
 
-.square:focus {
-  outline: none;
+/*.colon {
+  font-color:blue;
 }
-
-.kbd-navigation .square:focus {
-  background: #ddd;
+.line {
+  background-color: green;
 }
-
-.game {
-  display: flex;
-  flex-direction: row;
-}
-
-.game-info {
-  margin-left: 20px;
-}
+*/  

@@ -97,7 +97,7 @@ def generate_transcripts(filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='transcript parser')
-    parser.add_argument('filename')
+    parser.add_argument('in_file')
     args = parser.parse_args()
-    filename = args.filename
+    filename = args.in_file
     generate_transcripts(filename)
