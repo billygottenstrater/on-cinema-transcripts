@@ -18,7 +18,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     if (this.state.isLoading){
-      fetch("http://99.4.188.203:3001/list.json")
+      fetch("json/list.json")
         .then( res => res.json())
         .then(
           (result) => {
@@ -108,7 +108,7 @@ class Episode extends React.Component {
     }
   }
   componentDidMount() {
-    fetch("http://99.4.188.203:3001/"+this.state.name+".json")
+    fetch("json/"+this.state.name+".json")
       .then( res => res.json())
       .then(
         (result) => {
